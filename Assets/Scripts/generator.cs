@@ -133,34 +133,12 @@ public class Generator : MonoBehaviour
         int random = UnityEngine.Random.Range(0, zidovi.Count);
         Zid nasumicanZid = zidovi[random];
         zidovi.RemoveAt(random);
+
         if (Celija.DohvatiRoditelja(nasumicanZid.celije[0]) != Celija.DohvatiRoditelja(nasumicanZid.celije[1]))
         {
             Celija.DohvatiRoditelja(nasumicanZid.celije[1]).roditelj = nasumicanZid.celije[0];
             nasumicanZid.ObrisiZid();
         }
-            
-        /*if (Celija.DohvatiRoditelja(nasumicanZid.celije[0]) == Celija.DohvatiRoditelja(nasumicanZid.celije[1]))
-        {
-            if (Celija.DohvatiRoditelja(nasumicanZid.celije[0]) == null && Celija.DohvatiRoditelja(nasumicanZid.celije[1]) == null)
-            {
-                nasumicanZid.celije[0].roditelj = nasumicanZid.celije[1];
-                nasumicanZid.ObrisiZid();
-            }
-        } 
-        else
-        {
-            if (Celija.DohvatiRoditelja(nasumicanZid.celije[0]) == null && Celija.DohvatiRoditelja(nasumicanZid.celije[1]) == null)
-            {
-                Celija.DohvatiRoditelja(nasumicanZid.celije[0]).roditelj = nasumicanZid.celije[1];
-                nasumicanZid.ObrisiZid();
-            }
-
-            else
-            {
-                Celija.DohvatiRoditelja(nasumicanZid.celije[1]).roditelj = nasumicanZid.celije[0];
-                nasumicanZid.ObrisiZid();
-            }
-        }*/
     }
 
     public void GenerirajPocetakICilj()
