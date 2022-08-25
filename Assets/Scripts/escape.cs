@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class escape : MonoBehaviour
+public class Escape : MonoBehaviour
 {
     public GameObject EscapeObj;
     public GameObject Player;
@@ -24,8 +24,9 @@ public class escape : MonoBehaviour
 
         Time.timeScale = 1;
         Cursor.visible = false;
-        Player.GetComponent<FirstPersonController>().enabled = true;
         Cursor.lockState = CursorLockMode.Locked;
+        Player.GetComponent<FirstPersonController>().enabled = true;
+        
 
     }
     void Update()
@@ -37,8 +38,9 @@ public class escape : MonoBehaviour
                 EscapeObj.SetActive(true);
                 Time.timeScale = 0;
                 Cursor.visible = true;
-                Player.GetComponent<FirstPersonController>().enabled = false;
                 Cursor.lockState = CursorLockMode.None;
+                Player.GetComponent<FirstPersonController>().enabled = false;
+                
                 
                 esc = true;
             } else

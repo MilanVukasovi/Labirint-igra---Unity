@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class menu : MonoBehaviour
+public class Menu : MonoBehaviour
 {
     public Button igrajButton;
     public Button izadiButton;
@@ -13,17 +13,15 @@ public class menu : MonoBehaviour
     public InputField duzina;
     void Start()
     {
-        Button btnIgraj = igrajButton.GetComponent<Button>();
-        btnIgraj.onClick.AddListener(PokreniIgru);
-        Button btnIzadi = izadiButton.GetComponent<Button>();
-        btnIzadi.onClick.AddListener(IzadiIzIgre);
+        igrajButton.onClick.AddListener(PokreniIgru);
+        izadiButton.onClick.AddListener(IzadiIzIgre);
     }
 
     void PokreniIgru()
     {
         string s = sirina.GetComponent<InputField>().text;
         PlayerPrefs.SetString("sirina", s);
-        var d = duzina.GetComponent<InputField>().text;
+        string d = duzina.GetComponent<InputField>().text;
         PlayerPrefs.SetString("duzina", d);
         SceneManager.LoadScene("Igra", LoadSceneMode.Single);
     }

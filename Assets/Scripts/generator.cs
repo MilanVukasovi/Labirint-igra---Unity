@@ -4,7 +4,24 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class generator : MonoBehaviour
+public class Celija
+{
+    public Celija roditelj;
+    public static Celija DohvatiRoditelja(Celija celija)
+    {
+        if (celija.roditelj == null)
+        {
+            return celija;
+        }
+
+        else
+        {
+            return DohvatiRoditelja(celija.roditelj);
+        }
+    }
+}
+
+public class Generator : MonoBehaviour
 {
     public GameObject Zid;
     public GameObject Pocetak;
@@ -14,9 +31,8 @@ public class generator : MonoBehaviour
     public int sirina; // x
     public int duzina; // z
 
-    [HideInInspector] public Celija[] celije;
-    [HideInInspector] public List<Zid> zidovi;
-    [HideInInspector] public int brojZida = 0;    
+    public Celija[] celije;
+    public List<Zid> zidovi = new List<Zid>();
 
     public void Start()
     {
@@ -30,10 +46,9 @@ public class generator : MonoBehaviour
             celije[i] = new Celija();
         }
 
-        zidovi = new List<Zid>();
         GenerirajGranice();
-        LijevoDesnoUnutarnji();
-        GoreDoljeUnutarnji();
+        GenerirajHorizontalnoUnutarnji();
+        GenerirajVertikalnoUnutarnji();
         int brojZidova = zidovi.Count;
         for (int i = 0; i < brojZidova; i++)
         {
@@ -44,34 +59,34 @@ public class generator : MonoBehaviour
 
     public void GenerirajGranice()
     {
+        int ZidIndex = 0;
         for (int x = 0; x <= sirina; x++)
         {
-            for (int z = 1; z <= duzina; z++)
+            if (x == 0 || x == sirina)
             {
-                if (x == 0 || x == sirina)
+                for (int z = 1; z <= duzina; z++)
                 {
                     GameObject zid = (GameObject)Instantiate(Zid, new Vector3((x * 4), 0, (z * 4)), Quaternion.Euler(0, 90, 0));
-                    zid.name = "ZidHorizontal " + brojZida;
-                    brojZida++;
+                    zid.name = "ZidHorizontal " + ZidIndex;
+                    ZidIndex++;
                 }
             }
         }
-        brojZida = 0;
+        ZidIndex = 0;
         for (int z = 0; z <= duzina; z++)
         {
-            for (int x = 0; x < sirina; x++)
+            if (z == 0 || z == duzina)
             {
-                if (z == 0 || z == duzina)
+                for (int x = 0; x < sirina; x++)
                 {
                     GameObject zid = (GameObject)Instantiate(Zid, new Vector3((x * 4) + 2f, 0, (z * 4) + 2f), Quaternion.Euler(0, 0, 0));
-                    zid.name = "ZidVertical " + brojZida;
-                    brojZida++;
+                    zid.name = "ZidVertical " + ZidIndex;
+                    ZidIndex++;
                 }
             }
         }
-
     }
-    public void LijevoDesnoUnutarnji()
+    public void GenerirajHorizontalnoUnutarnji()
     {
         int ZidIndex = 0;
 
@@ -87,14 +102,13 @@ public class generator : MonoBehaviour
                 instanca.GetComponent<Zid>().celije[1] = celije[ZidIndex + 1];
 
                 zidovi.Add(instanca.GetComponent<Zid>());
-                brojZida++;
                 ZidIndex++;
             }
             ZidIndex++;
         }
     }
 
-    public void GoreDoljeUnutarnji()
+    public void GenerirajVertikalnoUnutarnji()
     {
         int ZidIndex = 0;
 
@@ -110,7 +124,6 @@ public class generator : MonoBehaviour
                 instanca.GetComponent<Zid>().celije[1] = celije[ZidIndex + 1];
 
                 zidovi.Add(instanca.GetComponent<Zid>());
-                brojZida++;
                 ZidIndex++;
             }
         }
@@ -119,10 +132,14 @@ public class generator : MonoBehaviour
     {
         int random = UnityEngine.Random.Range(0, zidovi.Count);
         Zid nasumicanZid = zidovi[random];
-
         zidovi.RemoveAt(random);
-
-        if (Celija.DohvatiRoditelja(nasumicanZid.celije[0]) == Celija.DohvatiRoditelja(nasumicanZid.celije[1]))
+        if (Celija.DohvatiRoditelja(nasumicanZid.celije[0]) != Celija.DohvatiRoditelja(nasumicanZid.celije[1]))
+        {
+            Celija.DohvatiRoditelja(nasumicanZid.celije[1]).roditelj = nasumicanZid.celije[0];
+            nasumicanZid.ObrisiZid();
+        }
+            
+        /*if (Celija.DohvatiRoditelja(nasumicanZid.celije[0]) == Celija.DohvatiRoditelja(nasumicanZid.celije[1]))
         {
             if (Celija.DohvatiRoditelja(nasumicanZid.celije[0]) == null && Celija.DohvatiRoditelja(nasumicanZid.celije[1]) == null)
             {
@@ -143,7 +160,7 @@ public class generator : MonoBehaviour
                 Celija.DohvatiRoditelja(nasumicanZid.celije[1]).roditelj = nasumicanZid.celije[0];
                 nasumicanZid.ObrisiZid();
             }
-        }
+        }*/
     }
 
     public void GenerirajPocetakICilj()
@@ -180,19 +197,4 @@ public class generator : MonoBehaviour
         Player.SetActive(true);        
     }
 }
-public class Celija
-{
-    public Celija roditelj;
-    public static Celija DohvatiRoditelja(Celija celija)
-    {
-        if (celija.roditelj == null)
-        {
-            return celija;
-        }
 
-        else
-        {
-            return DohvatiRoditelja(celija.roditelj);
-        }
-    }
-}
